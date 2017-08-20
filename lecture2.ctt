@@ -250,6 +250,11 @@ transit (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c =
                    [ (i = 0) -> <j> a
                    , (i = 1) -> q ]
 
+
+
+
+
+
 -- The first argument to comp is a path in the universe (i.e. an
 -- equality of types), as all of the paths in the example are in the
 -- same type this path is constantly A. The second argument is the

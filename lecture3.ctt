@@ -37,6 +37,32 @@ ex (A : U) (a b : A) (p : Path A a b) :
 -- bottom square. Note that the composition is done in direction i
 -- (going up) while j and k are the two other directions.
 
+
+lemtrId (A : U) (a c : A) (q : Path A a c) : Path (Path A c c) (<k> comp (<_> A) (q @ k) [ (k = 1) -> <_> c , (k = 0) -> q ]) (<_> c) 
+  = <i k> comp (<_> A) (q @ (i \/ k)) [ (i = 0) -> fill (<_> A) (q @ k) [ (k = 1) -> <_> c
+                                                                       , (k = 0) -> q ]
+	                              , (i = 1) -> <j> c
+				      , (k = 0) -> <j> q @ (i \/ j)
+				      , (k = 1) -> <j> c ]
+
+
+
+
+lemtransitId (A : U) (a c : A) (q : Path A a c) : PathP (<k> (Path A a (comp (<_> A) (q @ k) [ (k = 1) -> <_> c , (k = 0) -> q ]))) (transit A a a c (<i> a) q) q
+  = <k i> comp (<_> A) (q @ (i /\ k)) [ (k = 1) -> <j> q @ i
+                                       , (k = 0) -> fill (<_> A) a
+                                                                 [ (i = 0) -> <_> a
+                                                                 , (i = 1) -> q ]
+				       , (i = 0) -> <j> a
+				       , (i = 1) -> fill (<_> A) (q @ k)
+				                                 [ (k = 1) -> <_> c
+								 , (k = 0) -> q ]
+								                          ]
+
+
+
+
+
 {-
 
 In the above example the k = 0 face of the cube was omitted. The
@@ -135,6 +161,10 @@ gencomp (A B : U) (P : Path U A B) (a b : A) (c d : B)
 subst (A : U) (P : A -> U) (a b : A)
       (p : Path A a b) (e : P a) : P b =
   transport (<i> P (p @ i)) e
+
+
+transitId (A : U) (a c : A) (q : Path A a c) : Path (Path A a c) (transit A a a c (<i> a) q) q
+  = subst (Path A c c) (\(z : Path A c c) -> PathP (<k> (Path A a (z @ k))) (transit A a a c (<i> a) q) q) (<k> comp (<_> A) (q @ k) [ (k = 1) -> <_> c , (k = 0) -> q ]) (<_> c) (lemtrId A a c q) (lemtransitId A a c q)
 
 -- Note that we are using transport and not trans. The reason is that
 -- we don't have implicit arguments, so we have a built-in transport
